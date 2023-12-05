@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe with Background Image</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/d8/Icon_Kudus_Kota_Kretek.jpg'); /* Ganti dengan URL gambar yang Anda inginkan */
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            color: rgb(255, 255, 255);
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: rgb(255, 255, 255);
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            margin: 20px auto;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 2em;
+            border: 1px solid rgb(204, 204, 204);
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgb(51, 51, 51);
+            border-radius: 8px;
+        }
+
+        .cell:hover {
+            transform: scale(1.1);
+        }
+
+        .animate {
+            animation: scale 0.5s ease-in-out;
+        }
+
+        @keyframes scale {
+            0% { transform: scale(0.5); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tic Tac Toe</h1>
+    <div id="message">Giliran pemain X</div>
+
+    <div class="board" onclick="cellClicked(event)">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+
+    <script>
+        var currentPlayer = 'X';
+        var board = ['', '', '', '', '', '', '', '', ''];
+        var gameOver = false;
+
+        function cellClicked(event) {
+            if (gameOver) return;
+
+            var clickedCell = event.target;
+            var cellIndex = clickedCell.dataset.index;
+
+            if (board[cellIndex] === '') {
+                board[cellIndex] = currentPlayer;
+                clickedCell.textContent = currentPlayer;
+                clickedCell.classList.add('animate');
+
+                if (checkWinner()) {
+                    document.getElementById('message').textContent = 'Pemain ' + currentPlayer + ' Menang!';
+                    gameOver = true;
+                } else if (board.every(cell => cell !== '')) {
+                    document.getElementById('message').textContent = 'Permainan Seri!';
+                    gameOver = true;
+                } else {
+                    currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+                    document.getElementById('message').textContent = 'Giliran pemain ' + currentPlayer;
+                }
+            }
+        }
+
+        function checkWinner() {
+            // Cek baris, kolom, dan diagonal
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // baris
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // kolom
+                [0, 4, 8], [2, 4, 6]             // diagonal
+            ];
+
+            return winPatterns.some(pattern =>
+                board[pattern[0]] !== '' &&
+                board[pattern[0]] === board[pattern[1]] &&
+                board[pattern[1]] === board[pattern[2]]
+            );
+        }
+    </script>
+
+</body>
+</html>
